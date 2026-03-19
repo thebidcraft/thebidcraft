@@ -169,7 +169,11 @@
     .popular-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--orange); color: white; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 16px; border-radius: 100px; white-space: nowrap; }
     .plan-name { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--steel); margin-bottom: 16px; }
     .plan-price { font-family: var(--font-display); font-size: 72px; letter-spacing: 2px; line-height: 1; color: var(--white); margin-bottom: 4px; }
-    .plan-period { font-size: 14px; color: var(--steel); margin-bottom: 32px; }
+    .plan-period { font-size: 14px; color: var(--steel); margin-bottom: 12px; }
+    .plan-was { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .plan-was-price { font-size: 20px; color: var(--steel); text-decoration: line-through; text-decoration-color: rgba(255,92,26,0.7); font-family: var(--font-display); letter-spacing: 1px; }
+    .plan-was-badge { background: rgba(255,92,26,0.15); border: 1px solid rgba(255,92,26,0.3); color: var(--orange); font-size: 11px; font-weight: 700; letter-spacing: 1px; padding: 2px 8px; border-radius: 100px; text-transform: uppercase; }
+    .plan-launch-note { font-size: 12px; color: var(--orange); font-weight: 600; margin-bottom: 28px; display: flex; align-items: center; gap: 6px; }
     .plan-features { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
     .plan-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--mist); }
     .plan-features li .check { color: var(--green); font-size: 15px; }
@@ -219,15 +223,8 @@
     @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
     .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
-  </style><!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8MJHTLRRNB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-8MJHTLRRNB');
-</script></head>
+  </style>
+</head>
 <body>
 
   <nav>
@@ -252,7 +249,7 @@
     <p class="hero-sub-headline">In Under 3 Minutes.</p>
     <p class="hero-description">Stop losing bids because your proposals look like they were written on a napkin. TheBidCraft generates <strong>professional, itemized PDF proposals</strong> from a simple form — so you can quote fast and close faster.</p>
     <div class="hero-actions">
-      <a href="/login.html" class="btn-primary">Start Free — 5 Bids on Us →</a>
+      <a href="/app.html" class="btn-primary">Start Free — 5 Bids on Us →</a>
       <a href="#how" class="btn-ghost">▶ See How It Works</a>
     </div>
     <div class="hero-trust">
@@ -370,12 +367,18 @@
         <span class="section-tag">Simple Pricing</span>
         <h2 class="section-title">Pay Once. Or Pay Monthly.<br>You Decide.</h2>
         <p style="color:var(--steel); font-size:16px; margin-top:16px;">Start with 5 free proposals. No credit card required.</p>
+        <div style="margin-top:14px; display:inline-flex; align-items:center; gap:8px; background:rgba(255,92,26,0.08); border:1px solid rgba(255,92,26,0.2); border-radius:100px; padding:6px 16px; font-size:13px; color:var(--orange); font-weight:600;">🔥 Launch pricing — save up to 49% for a limited time</div>
       </div>
       <div class="pricing-cards fade-up">
         <div class="pricing-card">
           <div class="plan-name">Monthly</div>
-          <div class="plan-price">$29</div>
+          <div class="plan-was">
+            <span class="plan-was-price">$29</span>
+            <span class="plan-was-badge">🔥 Launch Deal</span>
+          </div>
+          <div class="plan-price">$14<span style="font-size:32px">.99</span></div>
           <div class="plan-period">per month · cancel anytime</div>
+          <div class="plan-launch-note">⏰ Limited launch pricing — lock it in now</div>
           <ul class="plan-features">
             <li><span class="check">✓</span> Unlimited proposals</li>
             <li><span class="check">✓</span> Your logo & branding</li>
@@ -386,13 +389,18 @@
             <li><span class="x">✗</span> Priority support</li>
             <li><span class="x">✗</span> Team member seats</li>
           </ul>
-          <button class="plan-cta plan-cta-ghost" onclick="handlePlan('monthly')">Start Now →</button>
+          <button class="plan-cta plan-cta-ghost" onclick="handlePlan('monthly')">Start Free — 14 Days Free Trial →</button>
         </div>
         <div class="pricing-card popular">
-          <div class="popular-badge">⭐ Best Value — Save 43%</div>
+          <div class="popular-badge">⭐ Best Value — 49% Off Today</div>
           <div class="plan-name">Lifetime Access</div>
-          <div class="plan-price">$197</div>
+          <div class="plan-was">
+            <span class="plan-was-price">$197</span>
+            <span class="plan-was-badge">🔥 Launch Deal</span>
+          </div>
+          <div class="plan-price">$99<span style="font-size:32px">.90</span></div>
           <div class="plan-period">one-time payment · yours forever</div>
+          <div class="plan-launch-note">⏰ Price goes up when launch offer ends</div>
           <ul class="plan-features">
             <li><span class="check">✓</span> Unlimited proposals — forever</li>
             <li><span class="check">✓</span> Your logo & branding</li>
@@ -403,7 +411,7 @@
             <li><span class="check">✓</span> Priority email support</li>
             <li><span class="check">✓</span> 2 team member seats</li>
           </ul>
-          <button class="plan-cta plan-cta-primary" onclick="handlePlan('lifetime')">Get Lifetime Access →</button>
+          <button class="plan-cta plan-cta-primary" onclick="handlePlan('lifetime')">Get Lifetime — $99.90 →</button>
         </div>
       </div>
       <div class="pricing-guarantee fade-up">
@@ -477,7 +485,7 @@
     <h2 class="fade-up">STOP LOSING BIDS.<br><span style="color:var(--orange);">START TODAY.</span></h2>
     <p class="fade-up">5 free proposals. No credit card. Setup in 2 minutes.</p>
     <div class="fade-up">
-      <a href="/login.html" class="btn-primary" style="font-size:18px; padding: 18px 40px;">Generate Your First Proposal Free →</a>
+      <a href="/app.html" class="btn-primary" style="font-size:18px; padding: 18px 40px;">Generate Your First Proposal Free →</a>
     </div>
   </section>
 
@@ -514,9 +522,9 @@
 
     function handlePlan(plan) {
       if (plan === 'monthly') {
-        window.location.href = 'https://buy.stripe.com/5kQ7sM9NfdYebFC2sv2go00';
+        window.location.href = 'https://buy.stripe.com/6oUcN6e3v07o6liaZ12go02';
       } else {
-        window.location.href = 'https://buy.stripe.com/14A28s9Nf07oaBy4AD2go01';
+        window.location.href = 'https://buy.stripe.com/3cI28s1gJ8DU7pmgjl2go03';
       }
     }
 
