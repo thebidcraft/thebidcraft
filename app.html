@@ -9,192 +9,585 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
-      --orange: #FF5C1A; --orange-light: #FF7A3D; --orange-dim: rgba(255,92,26,0.12);
-      --dark: #111210; --dark-2: #1A1B18; --dark-3: #242520;
-      --mid: #35362F; --steel: #6B7066; --mist: #A8ADA0; --white: #FAFAF8;
-      --green: #4CAF7D; --green-dim: rgba(76,175,125,0.1);
-      --font-display: 'Bebas Neue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
+      --orange: #FF5C1A;
+      --orange-light: #FF7A3D;
+      --orange-dim: rgba(255,92,26,0.12);
+      --dark: #111210;
+      --dark-2: #1A1B18;
+      --dark-3: #242520;
+      --mid: #35362F;
+      --steel: #6B7066;
+      --mist: #A8ADA0;
+      --white: #FAFAF8;
+      --green: #4CAF7D;
+      --green-dim: rgba(76,175,125,0.1);
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
     }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-body); background: var(--dark); color: var(--white); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-    @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+    html, body {
+      height: 100%;
+      font-family: var(--font-body);
+      background: var(--dark);
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
 
-    .sidebar { background: var(--dark-2); border-right: 1px solid var(--mid); display: flex; flex-direction: column; padding: 24px 0; position: fixed; left: 0; top: 0; bottom: 0; width: 240px; z-index: 10; }
-    .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 0 20px 28px; border-bottom: 1px solid var(--mid); margin-bottom: 16px; }
-    .sidebar-logo-icon { width: 32px; height: 32px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
-    .sidebar-logo-text { font-family: var(--font-display); font-size: 20px; letter-spacing: 1px; }
-    .sidebar-nav { list-style: none; padding: 0 12px; flex: 1; }
-    .sidebar-nav li a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--steel); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; }
-    .sidebar-nav li a:hover { background: var(--dark-3); color: var(--white); }
-    .sidebar-nav li a.active { background: var(--orange-dim); color: var(--orange); }
-    .sidebar-bottom { padding: 16px 12px 0; border-top: 1px solid var(--mid); }
-    .user-chip { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; background: var(--dark-3); }
-    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--orange-dim); border: 1px solid rgba(255,92,26,0.3); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--orange); font-weight: 700; }
-    .user-name { font-size: 13px; font-weight: 600; color: var(--white); }
-    .plan-badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; }
-    .plan-badge.free { background: rgba(107,112,102,0.2); color: var(--steel); }
-    .plan-badge.monthly { background: var(--orange-dim); color: var(--orange); }
+    /* ══════════════════════════════
+       PAGE VIEWS — only one shows at a time
+    ══════════════════════════════ */
+    .page { display: none; }
+    .page.active { display: flex; min-height: 100vh; }
+
+    /* ══════════════════════════════
+       SIDEBAR
+    ══════════════════════════════ */
+    .sidebar {
+      width: 240px;
+      min-width: 240px;
+      background: var(--dark-2);
+      border-right: 1px solid var(--mid);
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 22px 20px;
+      border-bottom: 1px solid var(--mid);
+    }
+
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: var(--font-display);
+      font-size: 20px;
+      letter-spacing: 1px;
+      color: var(--white);
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      padding: 14px 12px;
+      flex: 1;
+    }
+
+    .sidebar-nav li { margin-bottom: 2px; }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--steel);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover { background: var(--dark-3); color: var(--white); }
+    .nav-btn.active { background: var(--orange-dim); color: var(--orange); }
+    .nav-btn .ni { font-size: 16px; width: 22px; text-align: center; }
+
+    .sidebar-bottom {
+      padding: 14px 12px;
+      border-top: 1px solid var(--mid);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--dark-3);
+    }
+
+    .u-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--orange-dim);
+      border: 1px solid rgba(255,92,26,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .u-name { font-size: 13px; font-weight: 600; color: var(--white); }
+
+    .plan-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-top: 3px;
+    }
+    .plan-badge.free     { background: rgba(107,112,102,0.2); color: var(--steel); }
+    .plan-badge.monthly  { background: var(--orange-dim); color: var(--orange); }
     .plan-badge.lifetime { background: rgba(76,175,125,0.15); color: var(--green); }
 
-    .main { margin-left: 240px; display: flex; flex-direction: column; min-height: 100vh; }
-    @media (max-width: 768px) { .main { margin-left: 0; } }
+    /* ══════════════════════════════
+       MAIN AREA
+    ══════════════════════════════ */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
 
-    .topbar { background: var(--dark-2); border-bottom: 1px solid var(--mid); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 5; }
-    .topbar-title { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; }
+    .topbar {
+      background: var(--dark-2);
+      border-bottom: 1px solid var(--mid);
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-    /* ─── TRIAL BANNER ─── */
-    .trial-banner { border-bottom: 1px solid rgba(255,92,26,0.2); padding: 10px 32px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; background: linear-gradient(90deg, rgba(255,92,26,0.08), transparent); }
-    .trial-banner.hidden { display: none; }
-    .trial-banner.subscribed { background: linear-gradient(90deg, rgba(76,175,125,0.07), transparent); border-bottom-color: rgba(76,175,125,0.15); }
-    .trial-left { display: flex; align-items: center; gap: 12px; color: var(--mist); }
-    .trial-dots { display: flex; gap: 5px; }
-    .trial-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mid); transition: background 0.3s; }
-    .trial-dot.used { background: var(--orange); }
-    .trial-cta { background: var(--orange); color: white; border: none; border-radius: 6px; padding: 7px 16px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; white-space: nowrap; }
-    .trial-cta:hover { background: var(--orange-light); }
+    .topbar-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
 
-    .content { padding: 32px; flex: 1; max-width: 1100px; width: 100%; margin: 0 auto; }
+    /* Trial / Subscribed Banner */
+    .banner {
+      padding: 9px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255,92,26,0.2);
+      background: linear-gradient(90deg, rgba(255,92,26,0.08), transparent);
+    }
+    .banner.sub {
+      background: linear-gradient(90deg, rgba(76,175,125,0.08), transparent);
+      border-bottom-color: rgba(76,175,125,0.15);
+    }
+    .banner-left { display: flex; align-items: center; gap: 12px; color: var(--mist); }
+    .dots { display: flex; gap: 5px; }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--mid);
+      transition: background 0.3s;
+    }
+    .dot.on { background: var(--orange); }
+    .banner-cta {
+      background: var(--orange); color: white;
+      border: none; border-radius: 6px;
+      padding: 7px 16px; font-size: 12px; font-weight: 700;
+      cursor: pointer; font-family: var(--font-body);
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .banner-cta:hover { background: var(--orange-light); }
 
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-    @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
-    .stat-mini { background: var(--dark-2); border: 1px solid var(--mid); border-radius: 12px; padding: 20px; }
-    .stat-mini-value { font-family: var(--font-display); font-size: 36px; letter-spacing: 1px; color: var(--white); line-height: 1; }
-    .stat-mini-label { font-size: 12px; color: var(--steel); margin-top: 6px; }
+    /* Scrollable content */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px;
+    }
 
-    .generator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-    @media (max-width: 900px) { .generator-grid { grid-template-columns: 1fr; } }
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
 
-    .card { background: var(--dark-2); border: 1px solid var(--mid); border-radius: 16px; overflow: hidden; }
-    .card-header { padding: 20px 24px; border-bottom: 1px solid var(--mid); display: flex; align-items: center; justify-content: space-between; }
-    .card-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .card-body { padding: 24px; }
+    .stat-box {
+      background: var(--dark-2);
+      border: 1px solid var(--mid);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
 
-    .form-group { margin-bottom: 18px; }
-    .form-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--steel); margin-bottom: 8px; }
-    .form-input, .form-textarea, .form-select { width: 100%; background: var(--dark-3); border: 1px solid var(--mid); border-radius: 8px; padding: 11px 14px; font-size: 14px; color: var(--white); font-family: var(--font-body); transition: border-color 0.2s; outline: none; }
-    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--orange); }
-    .form-input::placeholder, .form-textarea::placeholder { color: var(--steel); }
-    .form-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
-    .form-select option { background: var(--dark-3); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .form-hint { font-size: 11px; color: var(--steel); margin-top: 5px; line-height: 1.5; }
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: 34px;
+      letter-spacing: 1px;
+      color: var(--white);
+      line-height: 1;
+    }
 
-    .generate-btn { width: 100%; background: var(--orange); border: none; border-radius: 10px; padding: 15px; color: white; font-size: 16px; font-weight: 700; font-family: var(--font-body); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; }
-    .generate-btn:hover:not(:disabled) { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,92,26,0.3); }
-    .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .generate-btn .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
-    .generate-btn.loading .spinner { display: block; }
-    .generate-btn.loading .btn-text { opacity: 0.7; }
+    .stat-lbl { font-size: 12px; color: var(--steel); margin-top: 5px; }
+
+    /* Two-column generator */
+    .gen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--dark-2);
+      border: 1px solid var(--mid);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--mid);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .card-body { padding: 22px; }
+
+    /* Form elements */
+    .fg { margin-bottom: 16px; }
+
+    .fl {
+      display: block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--steel); margin-bottom: 7px;
+    }
+
+    .fi, .ft, .fs {
+      width: 100%;
+      background: var(--dark-3);
+      border: 1px solid var(--mid);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 14px;
+      color: var(--white);
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .fi:focus, .ft:focus, .fs:focus { border-color: var(--orange); }
+    .fi::placeholder, .ft::placeholder { color: var(--steel); }
+    .ft { resize: vertical; min-height: 96px; line-height: 1.6; }
+    .fs option { background: var(--dark-3); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .hint { font-size: 11px; color: var(--steel); margin-top: 5px; line-height: 1.5; }
+
+    /* Generate button */
+    .gen-btn {
+      width: 100%;
+      background: var(--orange);
+      border: none; border-radius: 10px;
+      padding: 14px; color: white;
+      font-size: 16px; font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 6px;
+      transition: all 0.2s;
+    }
+    .gen-btn:hover:not(:disabled) { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,92,26,0.3); }
+    .gen-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .spin {
+      width: 17px; height: 17px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+    .gen-btn.loading .spin { display: block; }
+    .gen-btn.loading .btn-txt { opacity: 0.7; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .output-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; gap: 12px; }
-    .output-placeholder-icon { font-size: 48px; opacity: 0.3; }
-    .output-placeholder-text { color: var(--steel); font-size: 14px; line-height: 1.6; }
-    .output-result { display: none; }
-    .output-result.visible { display: block; }
-    .proposal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--mid); }
-    .proposal-number { font-family: var(--font-display); font-size: 28px; letter-spacing: 2px; }
-    .proposal-date { font-size: 12px; color: var(--steel); margin-top: 4px; }
-    .proposal-badge { background: var(--green-dim); border: 1px solid rgba(76,175,125,0.3); color: var(--green); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 100px; }
-    .client-info { background: var(--dark-3); border-radius: 10px; padding: 16px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .client-info-item label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--steel); display: block; margin-bottom: 3px; }
-    .client-info-item span { font-size: 13px; color: var(--white); font-weight: 500; }
-    .line-items-header { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; padding: 8px 12px; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--steel); border-bottom: 1px solid var(--mid); margin-bottom: 8px; }
-    .line-item { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; padding: 10px 12px; border-radius: 8px; transition: background 0.15s; align-items: center; }
-    .line-item:hover { background: var(--dark-3); }
-    .line-item-desc { font-size: 13px; color: var(--mist); }
-    .line-item-qty { font-size: 12px; color: var(--steel); white-space: nowrap; text-align: right; }
-    .line-item-amount { font-size: 14px; font-weight: 600; color: var(--white); white-space: nowrap; text-align: right; min-width: 80px; }
-    .line-items-divider { height: 1px; background: var(--mid); margin: 12px 0; }
-    .line-items-total { display: flex; justify-content: space-between; align-items: center; padding: 14px 12px; background: var(--orange-dim); border: 1px solid rgba(255,92,26,0.2); border-radius: 10px; margin-bottom: 16px; }
-    .total-label { font-family: var(--font-display); font-size: 20px; letter-spacing: 2px; }
-    .total-amount { font-family: var(--font-display); font-size: 28px; letter-spacing: 2px; color: var(--orange); }
-    .proposal-notes { background: var(--dark-3); border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--steel); line-height: 1.7; margin-bottom: 20px; }
-    .proposal-notes strong { color: var(--mist); display: block; margin-bottom: 6px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
-    .output-actions { display: flex; gap: 10px; }
-    .btn-dl { flex: 1; background: var(--green); border: none; border-radius: 8px; padding: 12px; color: white; font-size: 14px; font-weight: 700; font-family: var(--font-body); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    /* Error */
+    .err {
+      background: rgba(255,59,48,0.1);
+      border: 1px solid rgba(255,59,48,0.3);
+      border-radius: 8px; padding: 11px 14px;
+      font-size: 13px; color: #ff6b6b;
+      margin-top: 10px; display: none;
+    }
+    .err.on { display: block; }
+
+    /* Output */
+    .empty-state {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 380px; text-align: center; gap: 12px;
+    }
+    .empty-icon { font-size: 44px; opacity: 0.25; }
+    .empty-txt { color: var(--steel); font-size: 14px; line-height: 1.7; }
+
+    .output { display: none; }
+    .output.on { display: block; }
+
+    .prop-head {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 20px; padding-bottom: 18px;
+      border-bottom: 1px solid var(--mid);
+    }
+    .prop-num { font-family: var(--font-display); font-size: 26px; letter-spacing: 2px; }
+    .prop-date { font-size: 12px; color: var(--steel); margin-top: 3px; }
+    .ready-badge {
+      background: var(--green-dim);
+      border: 1px solid rgba(76,175,125,0.3);
+      color: var(--green);
+      font-size: 11px; font-weight: 700;
+      padding: 4px 12px; border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .client-box {
+      background: var(--dark-3);
+      border-radius: 10px; padding: 14px;
+      margin-bottom: 18px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .ci label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--steel); display: block; margin-bottom: 3px; }
+    .ci span { font-size: 13px; color: var(--white); font-weight: 500; }
+
+    .items-head {
+      display: grid; grid-template-columns: 1fr auto auto;
+      gap: 10px; padding: 7px 10px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--steel);
+      border-bottom: 1px solid var(--mid); margin-bottom: 6px;
+    }
+
+    .li-row {
+      display: grid; grid-template-columns: 1fr auto auto;
+      gap: 10px; padding: 9px 10px;
+      border-radius: 7px; align-items: center;
+      transition: background 0.15s;
+    }
+    .li-row:hover { background: var(--dark-3); }
+    .li-desc { font-size: 13px; color: var(--mist); }
+    .li-qty { font-size: 12px; color: var(--steel); white-space: nowrap; text-align: right; }
+    .li-amt { font-size: 14px; font-weight: 600; color: var(--white); white-space: nowrap; text-align: right; min-width: 76px; }
+
+    .divider { height: 1px; background: var(--mid); margin: 10px 0; }
+
+    .total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 10px;
+      background: var(--orange-dim);
+      border: 1px solid rgba(255,92,26,0.2);
+      border-radius: 10px; margin-bottom: 14px;
+    }
+    .total-lbl { font-family: var(--font-display); font-size: 18px; letter-spacing: 2px; }
+    .total-amt { font-family: var(--font-display); font-size: 26px; letter-spacing: 2px; color: var(--orange); }
+
+    .notes-box {
+      background: var(--dark-3); border-radius: 10px;
+      padding: 13px 15px; font-size: 13px;
+      color: var(--steel); line-height: 1.7; margin-bottom: 18px;
+    }
+    .notes-box strong {
+      display: block; color: var(--mist); margin-bottom: 5px;
+      font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase;
+    }
+
+    .actions { display: flex; gap: 8px; }
+    .btn-dl {
+      flex: 1; background: var(--green);
+      border: none; border-radius: 8px;
+      padding: 11px; color: white;
+      font-size: 14px; font-weight: 700;
+      font-family: var(--font-body); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: all 0.2s;
+    }
     .btn-dl:hover { background: #3da86a; transform: translateY(-1px); }
-    .btn-sm { background: transparent; border: 1px solid var(--mid); border-radius: 8px; padding: 12px 16px; color: var(--steel); font-size: 13px; font-weight: 600; font-family: var(--font-body); cursor: pointer; transition: all 0.2s; }
+    .btn-sm {
+      background: transparent;
+      border: 1px solid var(--mid);
+      border-radius: 8px; padding: 11px 14px;
+      color: var(--steel); font-size: 13px; font-weight: 600;
+      font-family: var(--font-body); cursor: pointer;
+      transition: all 0.2s;
+    }
     .btn-sm:hover { border-color: var(--orange); color: var(--orange); }
 
-    .error-msg { background: rgba(255,59,48,0.1); border: 1px solid rgba(255,59,48,0.3); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #ff6b6b; margin-top: 12px; display: none; }
-    .error-msg.visible { display: block; }
+    /* ══════════════════════════════
+       COMING SOON PAGE
+    ══════════════════════════════ */
+    .coming-page {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; text-align: center;
+      padding: 40px;
+      gap: 16px;
+    }
+    .coming-icon { font-size: 64px; opacity: 0.5; }
+    .coming-title { font-family: var(--font-display); font-size: 48px; letter-spacing: 2px; color: var(--white); }
+    .coming-sub { font-size: 15px; color: var(--steel); max-width: 380px; line-height: 1.7; }
+    .coming-tag {
+      background: var(--orange-dim);
+      border: 1px solid rgba(255,92,26,0.25);
+      color: var(--orange);
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 100px;
+    }
 
-    /* ─── PAYWALL MODAL ─── */
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    /* ══════════════════════════════
+       PAYWALL MODAL
+    ══════════════════════════════ */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
     .overlay.open { opacity: 1; pointer-events: all; }
-    .modal { background: var(--dark-2); border: 1px solid var(--mid); border-radius: 24px; max-width: 700px; width: 100%; overflow: hidden; transform: translateY(32px) scale(0.97); transition: transform 0.3s ease; }
+
+    .modal {
+      background: var(--dark-2);
+      border: 1px solid var(--mid);
+      border-radius: 22px;
+      max-width: 680px; width: 100%;
+      overflow: hidden;
+      transform: translateY(30px) scale(0.97);
+      transition: transform 0.3s ease;
+    }
     .overlay.open .modal { transform: translateY(0) scale(1); }
 
-    .modal-top { background: linear-gradient(135deg, rgba(255,92,26,0.14), rgba(255,92,26,0.04)); border-bottom: 1px solid rgba(255,92,26,0.18); padding: 40px; text-align: center; }
-    .modal-icon { font-size: 52px; margin-bottom: 14px; }
-    .modal-title { font-family: var(--font-display); font-size: 46px; letter-spacing: 2px; line-height: 1; margin-bottom: 10px; }
-    .modal-sub { font-size: 15px; color: var(--steel); line-height: 1.6; }
-    .modal-sub strong { color: var(--mist); }
+    .modal-top {
+      background: linear-gradient(135deg, rgba(255,92,26,0.14), rgba(255,92,26,0.03));
+      border-bottom: 1px solid rgba(255,92,26,0.18);
+      padding: 36px 36px 28px; text-align: center;
+    }
+    .m-icon { font-size: 48px; margin-bottom: 12px; }
+    .m-title { font-family: var(--font-display); font-size: 42px; letter-spacing: 2px; line-height: 1; margin-bottom: 10px; }
+    .m-sub { font-size: 15px; color: var(--steel); line-height: 1.6; }
+    .m-sub strong { color: var(--mist); }
 
-    .modal-body { padding: 32px 40px 36px; }
-    .modal-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-    @media (max-width: 520px) { .modal-plans { grid-template-columns: 1fr; } .modal-body { padding: 24px; } }
+    .modal-body { padding: 28px 36px 34px; }
+    .m-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
 
-    .m-plan { background: var(--dark-3); border: 1px solid var(--mid); border-radius: 16px; padding: 26px; cursor: pointer; transition: all 0.2s; position: relative; }
-    .m-plan:hover { border-color: rgba(255,92,26,0.4); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+    .m-plan {
+      background: var(--dark-3);
+      border: 1px solid var(--mid);
+      border-radius: 14px; padding: 22px;
+      cursor: pointer; transition: all 0.2s;
+      position: relative;
+    }
+    .m-plan:hover { border-color: rgba(255,92,26,0.4); transform: translateY(-3px); }
     .m-plan.hot { border-color: var(--orange); background: linear-gradient(135deg, rgba(255,92,26,0.09), var(--dark-3)); }
-    .m-plan-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--orange); color: white; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 14px; border-radius: 100px; white-space: nowrap; }
-    .m-plan-name { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--steel); margin-bottom: 8px; }
-    .m-plan-price { font-family: var(--font-display); font-size: 56px; letter-spacing: 2px; color: var(--white); line-height: 1; }
-    .m-plan-period { font-size: 13px; color: var(--steel); margin-bottom: 18px; }
-    .m-plan-feats { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-    .m-plan-feats li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--mist); }
-    .m-plan-feats .ck { color: var(--green); }
-    .m-btn { display: block; width: 100%; text-align: center; padding: 12px; border-radius: 9px; font-weight: 700; font-size: 14px; border: none; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; }
+    .m-plan-badge {
+      position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+      background: var(--orange); color: white;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 3px 12px; border-radius: 100px; white-space: nowrap;
+    }
+    .m-name { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--steel); margin-bottom: 8px; }
+    .m-price { font-family: var(--font-display); font-size: 52px; letter-spacing: 2px; color: var(--white); line-height: 1; }
+    .m-period { font-size: 13px; color: var(--steel); margin-bottom: 16px; }
+    .m-feats { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+    .m-feats li { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--mist); }
+    .m-feats .ck { color: var(--green); }
+    .m-btn {
+      display: block; width: 100%; text-align: center;
+      padding: 11px; border-radius: 8px;
+      font-weight: 700; font-size: 14px;
+      border: none; cursor: pointer; font-family: var(--font-body);
+      transition: all 0.2s;
+    }
     .m-btn.p { background: var(--orange); color: white; }
     .m-btn.p:hover { background: var(--orange-light); }
     .m-btn.g { background: transparent; color: var(--mist); border: 1px solid var(--mid); }
     .m-btn.g:hover { border-color: var(--orange); color: var(--orange); }
 
-    .modal-footer { text-align: center; font-size: 13px; color: var(--steel); display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .m-foot { text-align: center; font-size: 13px; color: var(--steel); display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--dark-3); border: 1px solid var(--mid); border-radius: 10px; padding: 14px 20px; font-size: 14px; color: var(--white); box-shadow: 0 8px 32px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 2000; }
-    .toast.show { transform: translateY(0); opacity: 1; }
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--dark-3); border: 1px solid var(--mid);
+      border-radius: 10px; padding: 13px 20px;
+      font-size: 14px; color: var(--white);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s ease; z-index: 2000;
+    }
+    .toast.on { transform: translateY(0); opacity: 1; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .gen-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .m-plans { grid-template-columns: 1fr; }
+      .modal-body { padding: 20px; }
+      .modal-top { padding: 28px 20px 22px; }
+    }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
+<!-- ══════════════════════════════════
      PAYWALL MODAL
-     Shows automatically when free limit hit
-════════════════════════════════════════ -->
+══════════════════════════════════ -->
 <div class="overlay" id="paywall">
   <div class="modal">
     <div class="modal-top">
-      <div class="modal-icon">🔒</div>
-      <div class="modal-title">YOU'VE USED YOUR<br>5 FREE BIDS</div>
-      <div class="modal-sub">You're clearly serious about winning jobs.<br><strong>Unlock unlimited proposals</strong> and never stop bidding.</div>
+      <div class="m-icon">🔒</div>
+      <div class="m-title">YOU'VE USED YOUR<br>5 FREE BIDS</div>
+      <div class="m-sub">You're clearly serious about winning jobs.<br><strong>Unlock unlimited proposals</strong> and never stop bidding.</div>
     </div>
     <div class="modal-body">
-      <div class="modal-plans">
-
+      <div class="m-plans">
         <div class="m-plan" onclick="goCheckout('monthly')">
-          <div class="m-plan-name">Monthly</div>
-          <div class="m-plan-price">$29</div>
-          <div class="m-plan-period">per month · cancel anytime</div>
-          <ul class="m-plan-feats">
+          <div class="m-name">Monthly</div>
+          <div class="m-price">$29</div>
+          <div class="m-period">per month · cancel anytime</div>
+          <ul class="m-feats">
             <li><span class="ck">✓</span> Unlimited proposals</li>
             <li><span class="ck">✓</span> PDF export</li>
             <li><span class="ck">✓</span> Your branding</li>
-            <li><span class="ck">✓</span> Mobile friendly</li>
+            <li><span class="ck">✓</span> All trade types</li>
           </ul>
           <button class="m-btn g">Start Monthly →</button>
         </div>
-
         <div class="m-plan hot" onclick="goCheckout('lifetime')">
-          <div class="m-plan-badge">⭐ Best Value — Save 43%</div>
-          <div class="m-plan-name">Lifetime</div>
-          <div class="m-plan-price">$197</div>
-          <div class="m-plan-period">one-time · yours forever</div>
-          <ul class="m-plan-feats">
+          <div class="m-plan-badge">⭐ Best Value</div>
+          <div class="m-name">Lifetime</div>
+          <div class="m-price">$197</div>
+          <div class="m-period">one-time · yours forever</div>
+          <ul class="m-feats">
             <li><span class="ck">✓</span> Unlimited proposals forever</li>
             <li><span class="ck">✓</span> PDF export</li>
             <li><span class="ck">✓</span> Your branding</li>
@@ -202,315 +595,457 @@
           </ul>
           <button class="m-btn p">Get Lifetime Access →</button>
         </div>
-
       </div>
-      <div class="modal-footer">🛡️ <span><strong style="color:var(--mist)">14-day money-back guarantee.</strong> Not happy? Full refund, no questions asked.</span></div>
+      <div class="m-foot">🛡️ <span><strong style="color:var(--mist)">14-day money-back guarantee.</strong> Full refund if you're not happy.</span></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     APP SHELL
-════════════════════════════════════════ -->
-<div class="layout">
-  <aside class="sidebar">
+<!-- ══════════════════════════════════
+     PAGE: BID GENERATOR (default)
+══════════════════════════════════ -->
+<div class="page active" id="page-generator">
+  <div class="sidebar">
     <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">🔨</div>
-      <span class="sidebar-logo-text">TheBidCraft</span>
+      <div class="logo-icon">🔨</div>
+      <div class="logo-text">TheBidCraft</div>
     </div>
     <ul class="sidebar-nav">
-      <li><a href="app.html" class="active"><span>⚡</span> New Bid</a></li>
-      <li><a href="#"><span>📁</span> Saved Bids</a></li>
-      <li><a href="#"><span>📋</span> Templates</a></li>
-      <li><a href="#"><span>⚙️</span> My Profile</a></li>
+      <li><button class="nav-btn active" onclick="showPage('generator', this)"><span class="ni">⚡</span> New Bid</button></li>
+      <li><button class="nav-btn" onclick="showPage('saved', this)"><span class="ni">📁</span> Saved Bids</button></li>
+      <li><button class="nav-btn" onclick="showPage('templates', this)"><span class="ni">📋</span> Templates</button></li>
+      <li><button class="nav-btn" onclick="showPage('profile', this)"><span class="ni">⚙️</span> My Profile</button></li>
     </ul>
     <div class="sidebar-bottom">
       <div class="user-chip">
-        <div class="user-avatar">U</div>
+        <div class="u-avatar">U</div>
         <div>
-          <div class="user-name">My Account</div>
-          <span class="plan-badge" id="planBadge">Free Trial</span>
+          <div class="u-name">My Account</div>
+          <span class="plan-badge free" id="planBadge">Free Trial</span>
         </div>
       </div>
     </div>
-  </aside>
+  </div>
 
-  <main class="main">
+  <div class="main-area">
     <div class="topbar">
       <div class="topbar-title">Generate New Bid</div>
     </div>
 
-    <!-- Free Trial Banner (shown on free plan) -->
-    <div class="trial-banner" id="trialBanner">
-      <div class="trial-left">
-        <div class="trial-dots">
-          <div class="trial-dot" id="d1"></div>
-          <div class="trial-dot" id="d2"></div>
-          <div class="trial-dot" id="d3"></div>
-          <div class="trial-dot" id="d4"></div>
-          <div class="trial-dot" id="d5"></div>
+    <!-- Free trial banner -->
+    <div class="banner" id="trialBanner">
+      <div class="banner-left">
+        <div class="dots">
+          <div class="dot" id="d1"></div>
+          <div class="dot" id="d2"></div>
+          <div class="dot" id="d3"></div>
+          <div class="dot" id="d4"></div>
+          <div class="dot" id="d5"></div>
         </div>
-        <span id="trialText">5 free proposals — no credit card needed</span>
+        <span id="trialTxt">5 free proposals — no credit card needed</span>
       </div>
-      <button class="trial-cta" onclick="openPaywall()">Unlock Unlimited →</button>
+      <button class="banner-cta" onclick="openPaywall()">Unlock Unlimited →</button>
     </div>
 
-    <!-- Subscribed Banner (shown on paid plan) -->
-    <div class="trial-banner subscribed hidden" id="subBanner">
-      <div class="trial-left">
-        <span id="subText">✅ Active subscription — unlimited bids</span>
+    <!-- Subscribed banner (hidden by default) -->
+    <div class="banner sub" id="subBanner" style="display:none">
+      <div class="banner-left">
+        <span id="subTxt">✅ Active subscription — unlimited bids</span>
       </div>
     </div>
 
-    <div class="content">
+    <div class="scroll-area">
+      <!-- Stats -->
       <div class="stats-row">
-        <div class="stat-mini"><div class="stat-mini-value" id="statBids">0</div><div class="stat-mini-label">Total bids generated</div></div>
-        <div class="stat-mini"><div class="stat-mini-value">3 min</div><div class="stat-mini-label">Average time per bid</div></div>
-        <div class="stat-mini"><div class="stat-mini-value" id="statVal">$0</div><div class="stat-mini-label">Total value quoted</div></div>
+        <div class="stat-box"><div class="stat-val" id="sBids">0</div><div class="stat-lbl">Bids generated</div></div>
+        <div class="stat-box"><div class="stat-val">3 min</div><div class="stat-lbl">Average per bid</div></div>
+        <div class="stat-box"><div class="stat-val" id="sVal">$0</div><div class="stat-lbl">Total value quoted</div></div>
       </div>
 
-      <div class="generator-grid">
+      <!-- Generator grid -->
+      <div class="gen-grid">
 
-        <!-- FORM CARD -->
+        <!-- FORM -->
         <div class="card">
-          <div class="card-header"><div class="card-title">📋 Job Details</div></div>
+          <div class="card-head">
+            <div class="card-title">📋 Job Details</div>
+          </div>
           <div class="card-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Client Name *</label>
-                <input class="form-input" id="clientName" placeholder="Mike Johnson" />
+            <div class="two-col">
+              <div class="fg">
+                <label class="fl">Client Name *</label>
+                <input class="fi" id="cName" placeholder="Mike Johnson" />
               </div>
-              <div class="form-group">
-                <label class="form-label">Client Phone</label>
-                <input class="form-input" id="clientPhone" placeholder="847-555-0192" />
+              <div class="fg">
+                <label class="fl">Client Phone</label>
+                <input class="fi" id="cPhone" placeholder="847-555-0192" />
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">Job Address *</label>
-              <input class="form-input" id="jobAddress" placeholder="4821 Oak Street, Chicago, IL" />
+
+            <div class="fg">
+              <label class="fl">Job Address *</label>
+              <input class="fi" id="cAddr" placeholder="4821 Oak Street, Chicago, IL" />
             </div>
-            <div class="form-group">
-              <label class="form-label">Trade Type *</label>
-              <select class="form-select" id="tradeType">
+
+            <div class="fg">
+              <label class="fl">Trade Type *</label>
+              <select class="fs" id="cTrade">
                 <option value="">Select your trade...</option>
-                <option>Roofing</option><option>Plumbing</option><option>Electrical</option>
-                <option>HVAC</option><option>General Contracting</option><option>Painting</option>
-                <option>Flooring</option><option>Landscaping</option><option>Carpentry / Framing</option>
-                <option>Concrete / Masonry</option><option>Drywall</option><option>Pest Control</option>
+                <option>Roofing</option>
+                <option>Plumbing</option>
+                <option>Electrical</option>
+                <option>HVAC</option>
+                <option>General Contracting</option>
+                <option>Painting</option>
+                <option>Flooring</option>
+                <option>Landscaping</option>
+                <option>Carpentry / Framing</option>
+                <option>Concrete / Masonry</option>
+                <option>Drywall</option>
+                <option>Pest Control</option>
                 <option>Other</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label">Describe The Job *</label>
-              <textarea class="form-textarea" id="jobDesc" placeholder="Describe the scope of work in plain English. The more detail, the more accurate the bid."></textarea>
-              <div class="form-hint">Example: Replace 25 squares of shingles, install new underlayment, replace 3 sections of damaged decking, new ridge cap, haul all debris.</div>
+
+            <div class="fg">
+              <label class="fl">Describe the Job *</label>
+              <textarea class="ft" id="cDesc" placeholder="Describe the work in plain English. Example: Replace 25 squares of shingles, install new underlayment, replace 3 sections of rotted decking, new ridge cap and drip edge, haul all debris away."></textarea>
+              <div class="hint">More detail = more accurate bid. Write it like you'd explain it to a helper.</div>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Materials Markup %</label>
-                <input type="number" class="form-input" id="markup" value="25" min="0" max="200" />
-                <div class="form-hint">Your profit margin on materials.</div>
+
+            <div class="two-col">
+              <div class="fg">
+                <label class="fl">Materials Markup %</label>
+                <input type="number" class="fi" id="cMarkup" value="25" min="0" max="200" />
+                <div class="hint">Your profit on materials cost.</div>
               </div>
-              <div class="form-group">
-                <label class="form-label">Labor Rate ($/hr)</label>
-                <input type="number" class="form-input" id="laborRate" value="85" min="0" />
-                <div class="form-hint">Your hourly rate per crew member.</div>
+              <div class="fg">
+                <label class="fl">Labor Rate $/hr</label>
+                <input type="number" class="fi" id="cLabor" value="85" min="0" />
+                <div class="hint">Per crew member per hour.</div>
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">Your Business Name</label>
-              <input class="form-input" id="bizName" placeholder="Johnson Roofing & Exteriors" />
+
+            <div class="fg">
+              <label class="fl">Your Business Name</label>
+              <input class="fi" id="cBiz" placeholder="Johnson Roofing & Exteriors" />
             </div>
-            <div class="error-msg" id="errMsg"></div>
-            <button class="generate-btn" id="genBtn" onclick="generateBid()">
-              <div class="spinner"></div>
-              <span class="btn-text">⚡ Generate Proposal Now</span>
+
+            <div class="err" id="errMsg"></div>
+
+            <button class="gen-btn" id="genBtn" onclick="generateBid()">
+              <div class="spin"></div>
+              <span class="btn-txt">⚡ Generate Proposal Now</span>
             </button>
           </div>
         </div>
 
-        <!-- OUTPUT CARD -->
+        <!-- OUTPUT -->
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">📄 Generated Proposal</div>
+          <div class="card-head">
+            <div class="card-title">📄 Your Proposal</div>
             <div id="outStatus" style="font-size:12px;color:var(--steel)">Fill the form to generate</div>
           </div>
           <div class="card-body">
-            <div class="output-placeholder" id="placeholder">
-              <div class="output-placeholder-icon">📋</div>
-              <div class="output-placeholder-text">Fill out the job details on the left<br/>and click Generate to build your proposal.</div>
+
+            <div class="empty-state" id="emptyState">
+              <div class="empty-icon">📋</div>
+              <div class="empty-txt">
+                Fill out the job details on the left<br />
+                and click <strong style="color:var(--orange)">Generate Proposal Now</strong><br />
+                to build your professional bid.
+              </div>
             </div>
-            <div class="output-result" id="result">
-              <div class="proposal-header">
+
+            <div class="output" id="outputBox">
+              <div class="prop-head">
                 <div>
-                  <div class="proposal-number" id="propNum">PROPOSAL #001</div>
-                  <div class="proposal-date" id="propDate"></div>
+                  <div class="prop-num" id="pNum">PROPOSAL #001</div>
+                  <div class="prop-date" id="pDate"></div>
                 </div>
-                <div class="proposal-badge">READY TO SEND</div>
+                <div class="ready-badge">READY TO SEND</div>
               </div>
-              <div class="client-info">
-                <div class="client-info-item"><label>Client</label><span id="oClient">—</span></div>
-                <div class="client-info-item"><label>Phone</label><span id="oPhone">—</span></div>
-                <div class="client-info-item" style="grid-column:span 2"><label>Address</label><span id="oAddr">—</span></div>
+
+              <div class="client-box">
+                <div class="ci"><label>Client</label><span id="oName">—</span></div>
+                <div class="ci"><label>Phone</label><span id="oPhone">—</span></div>
+                <div class="ci" style="grid-column:span 2"><label>Address</label><span id="oAddr">—</span></div>
               </div>
-              <div class="line-items-header"><span>Description</span><span>Qty</span><span style="text-align:right">Amount</span></div>
-              <div id="lineItems"></div>
-              <div class="line-items-divider"></div>
-              <div class="line-items-total">
-                <span class="total-label">TOTAL</span>
-                <span class="total-amount" id="oTotal">$0</span>
+
+              <div class="items-head">
+                <span>Description</span>
+                <span>Qty</span>
+                <span style="text-align:right">Amount</span>
               </div>
-              <div class="proposal-notes"><strong>Terms & Notes</strong><span id="oNotes"></span></div>
-              <div class="output-actions">
+              <div id="itemsBox"></div>
+
+              <div class="divider"></div>
+
+              <div class="total-row">
+                <span class="total-lbl">TOTAL</span>
+                <span class="total-amt" id="oTotal">$0</span>
+              </div>
+
+              <div class="notes-box">
+                <strong>Terms &amp; Notes</strong>
+                <span id="oNotes"></span>
+              </div>
+
+              <div class="actions">
                 <button class="btn-dl" onclick="dlPDF()">⬇ Download PDF</button>
                 <button class="btn-sm" onclick="copyIt()">📋 Copy</button>
-                <button class="btn-sm" onclick="resetIt()">+ New</button>
+                <button class="btn-sm" onclick="newBid()">+ New</button>
               </div>
             </div>
+
           </div>
         </div>
+      </div><!-- end gen-grid -->
+    </div><!-- end scroll-area -->
+  </div><!-- end main-area -->
+</div><!-- end page-generator -->
 
+
+<!-- ══════════════════════════════════
+     PAGE: SAVED BIDS (coming soon)
+══════════════════════════════════ -->
+<div class="page" id="page-saved">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🔨</div>
+      <div class="logo-text">TheBidCraft</div>
+    </div>
+    <ul class="sidebar-nav">
+      <li><button class="nav-btn" onclick="showPage('generator', this)"><span class="ni">⚡</span> New Bid</button></li>
+      <li><button class="nav-btn active" onclick="showPage('saved', this)"><span class="ni">📁</span> Saved Bids</button></li>
+      <li><button class="nav-btn" onclick="showPage('templates', this)"><span class="ni">📋</span> Templates</button></li>
+      <li><button class="nav-btn" onclick="showPage('profile', this)"><span class="ni">⚙️</span> My Profile</button></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="u-avatar">U</div>
+        <div>
+          <div class="u-name">My Account</div>
+          <span class="plan-badge free" id="planBadge2">Free Trial</span>
+        </div>
       </div>
     </div>
-  </main>
+  </div>
+  <div class="main-area">
+    <div class="topbar"><div class="topbar-title">Saved Bids</div></div>
+    <div class="coming-page">
+      <div class="coming-icon">📁</div>
+      <div class="coming-tag">Coming Soon</div>
+      <div class="coming-title">SAVED BIDS</div>
+      <div class="coming-sub">Every proposal you generate will be saved here automatically so you can find, duplicate, and reuse them anytime. This feature is being built and will be live soon.</div>
+      <button class="banner-cta" onclick="showPage('generator', null)" style="margin-top:8px; padding: 12px 28px; font-size:14px">← Generate a New Bid Now</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     PAGE: TEMPLATES (coming soon)
+══════════════════════════════════ -->
+<div class="page" id="page-templates">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🔨</div>
+      <div class="logo-text">TheBidCraft</div>
+    </div>
+    <ul class="sidebar-nav">
+      <li><button class="nav-btn" onclick="showPage('generator', this)"><span class="ni">⚡</span> New Bid</button></li>
+      <li><button class="nav-btn" onclick="showPage('saved', this)"><span class="ni">📁</span> Saved Bids</button></li>
+      <li><button class="nav-btn active" onclick="showPage('templates', this)"><span class="ni">📋</span> Templates</button></li>
+      <li><button class="nav-btn" onclick="showPage('profile', this)"><span class="ni">⚙️</span> My Profile</button></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="u-avatar">U</div>
+        <div>
+          <div class="u-name">My Account</div>
+          <span class="plan-badge free">Free Trial</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-area">
+    <div class="topbar"><div class="topbar-title">Templates</div></div>
+    <div class="coming-page">
+      <div class="coming-icon">📋</div>
+      <div class="coming-tag">Coming Soon</div>
+      <div class="coming-title">TEMPLATES</div>
+      <div class="coming-sub">Save your best bids as reusable templates. Next time you quote a similar job, pre-fill 80% of the form in one click. Coming in the next update.</div>
+      <button class="banner-cta" onclick="showPage('generator', null)" style="margin-top:8px; padding: 12px 28px; font-size:14px">← Generate a New Bid Now</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     PAGE: MY PROFILE (coming soon)
+══════════════════════════════════ -->
+<div class="page" id="page-profile">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🔨</div>
+      <div class="logo-text">TheBidCraft</div>
+    </div>
+    <ul class="sidebar-nav">
+      <li><button class="nav-btn" onclick="showPage('generator', this)"><span class="ni">⚡</span> New Bid</button></li>
+      <li><button class="nav-btn" onclick="showPage('saved', this)"><span class="ni">📁</span> Saved Bids</button></li>
+      <li><button class="nav-btn" onclick="showPage('templates', this)"><span class="ni">📋</span> Templates</button></li>
+      <li><button class="nav-btn active" onclick="showPage('profile', this)"><span class="ni">⚙️</span> My Profile</button></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="u-avatar">U</div>
+        <div>
+          <div class="u-name">My Account</div>
+          <span class="plan-badge free">Free Trial</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-area">
+    <div class="topbar"><div class="topbar-title">My Profile</div></div>
+    <div class="coming-page">
+      <div class="coming-icon">⚙️</div>
+      <div class="coming-tag">Coming Soon</div>
+      <div class="coming-title">MY PROFILE</div>
+      <div class="coming-sub">Upload your logo, set your default labor rate and markup, manage your subscription, and customize your proposal template. All coming very soon.</div>
+      <button class="banner-cta" onclick="showPage('generator', null)" style="margin-top:8px; padding: 12px 28px; font-size:14px">← Generate a New Bid Now</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
+//  PAGE NAVIGATION
+// ════════════════════════════════════════
+function showPage(name, btn) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show target page
+  document.getElementById('page-' + name).classList.add('active');
+  // Update active nav button on the visible sidebar
+  if (btn) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    // Mark all buttons with same text as active (each page has its own sidebar copy)
+    document.querySelectorAll('.nav-btn').forEach(b => {
+      if (b.textContent.trim() === btn.textContent.trim()) b.classList.add('active');
+    });
+  }
+}
+
+
+// ════════════════════════════════════════
 //  SUBSCRIPTION SYSTEM
-//  How it works:
-//  1. Free users get 5 bids tracked in localStorage
-//  2. After 5 bids, paywall modal pops up automatically
-//  3. User clicks a plan → goes to Stripe
-//  4. After payment, Stripe sends them back to:
-//     https://thebidcraft.com/app.html?plan=monthly&key=LICENSEKEY
-//     (you set this "success URL" inside Stripe payment link settings)
-//  5. We save plan + key to localStorage → they are now unlocked
-//  6. Every generate call checks plan before running
-// ════════════════════════════════════════════════════════
-
-// ── Your Stripe payment links ──
-// IMPORTANT: In Stripe → Payment Links → After Payment →
-// Set the confirmation URL to:
-//   For monthly:  https://thebidcraft.com/app.html?plan=monthly&key={CHECKOUT_SESSION_ID}
-//   For lifetime: https://thebidcraft.com/app.html?plan=lifetime&key={CHECKOUT_SESSION_ID}
-// Stripe replaces {CHECKOUT_SESSION_ID} with a real unique session ID automatically.
-// This is how we know they actually paid.
-
+// ════════════════════════════════════════
 const STRIPE = {
   monthly:  'https://buy.stripe.com/5kQ7sM9NfdYebFC2sv2go00',
   lifetime: 'https://buy.stripe.com/14A28s9Nf07oaBy4AD2go01'
 };
-
 const FREE_LIMIT = 5;
 
-// ── Detect return from Stripe after payment ──
+// When Stripe redirects back after payment it adds ?plan=X&key=Y to the URL
 function detectPayment() {
-  const p = new URLSearchParams(window.location.search);
+  const p    = new URLSearchParams(window.location.search);
   const plan = p.get('plan');
   const key  = p.get('key');
   if (plan && key) {
     localStorage.setItem('tbc_plan', plan);
     localStorage.setItem('tbc_key',  key);
-    // Clean URL so the key does not stay visible in the address bar
     window.history.replaceState({}, '', '/app.html');
-    toast('🎉 Welcome to TheBidCraft Pro! Unlimited bids unlocked.');
+    showToast('🎉 Subscription activated! Unlimited bids unlocked.');
   }
 }
 
-function getPlan()   { return localStorage.getItem('tbc_plan') || 'free'; }
-function getKey()    { return localStorage.getItem('tbc_key')  || ''; }
-function usedBids()  { return parseInt(localStorage.getItem('tbc_used') || '0'); }
-function addUsed()   { localStorage.setItem('tbc_used', usedBids() + 1); }
-function canBid()    { return getPlan() !== 'free' || usedBids() < FREE_LIMIT; }
-function remaining() { return Math.max(0, FREE_LIMIT - usedBids()); }
+function getPlan()  { return localStorage.getItem('tbc_plan') || 'free'; }
+function getKey()   { return localStorage.getItem('tbc_key')  || ''; }
+function usedBids() { return parseInt(localStorage.getItem('tbc_used') || '0'); }
+function addUsed()  { localStorage.setItem('tbc_used', usedBids() + 1); }
+function canBid()   { return getPlan() !== 'free' || usedBids() < FREE_LIMIT; }
+function rem()      { return Math.max(0, FREE_LIMIT - usedBids()); }
 
-// ── Update all UI based on current plan ──
 function refreshUI() {
   const plan = getPlan();
   const used = usedBids();
 
-  // Sidebar badge
-  const badge = document.getElementById('planBadge');
-  if (plan === 'free')     { badge.textContent = 'Free Trial'; badge.className = 'plan-badge free'; }
-  if (plan === 'monthly')  { badge.textContent = 'Monthly Pro'; badge.className = 'plan-badge monthly'; }
-  if (plan === 'lifetime') { badge.textContent = 'Lifetime ⭐'; badge.className = 'plan-badge lifetime'; }
+  // Plan badge in sidebar
+  document.querySelectorAll('.plan-badge').forEach(b => {
+    if (plan === 'free')     { b.textContent = 'Free Trial'; b.className = 'plan-badge free'; }
+    if (plan === 'monthly')  { b.textContent = 'Monthly Pro'; b.className = 'plan-badge monthly'; }
+    if (plan === 'lifetime') { b.textContent = 'Lifetime ⭐'; b.className = 'plan-badge lifetime'; }
+  });
 
-  // Banners
-  const trialBanner = document.getElementById('trialBanner');
-  const subBanner   = document.getElementById('subBanner');
+  const tb = document.getElementById('trialBanner');
+  const sb = document.getElementById('subBanner');
 
   if (plan === 'free') {
-    trialBanner.classList.remove('hidden');
-    subBanner.classList.add('hidden');
-    // Update dots — filled dot = used bid
+    tb.style.display = 'flex'; sb.style.display = 'none';
     for (let i = 1; i <= 5; i++) {
-      document.getElementById('d' + i).classList.toggle('used', i <= used);
+      const d = document.getElementById('d' + i);
+      if (d) d.classList.toggle('on', i <= used);
     }
-    const rem = remaining();
-    document.getElementById('trialText').textContent =
-      rem === 0
+    const r = rem();
+    document.getElementById('trialTxt').textContent =
+      r === 0
         ? '⚠️ All 5 free proposals used — upgrade to continue'
-        : rem + ' of 5 free proposal' + (rem !== 1 ? 's' : '') + ' remaining';
+        : r + ' of 5 free proposal' + (r !== 1 ? 's' : '') + ' remaining — no card needed';
   } else {
-    trialBanner.classList.add('hidden');
-    subBanner.classList.remove('hidden');
-    document.getElementById('subText').textContent =
+    tb.style.display = 'none'; sb.style.display = 'flex';
+    document.getElementById('subTxt').textContent =
       plan === 'lifetime'
-        ? '⭐ Lifetime Member — unlimited bids forever'
+        ? '⭐ Lifetime Member — unlimited bids, forever'
         : '✅ Monthly Pro — unlimited bids active';
   }
 }
 
 function openPaywall()  { document.getElementById('paywall').classList.add('open'); }
 function closePaywall() { document.getElementById('paywall').classList.remove('open'); }
-document.getElementById('paywall').addEventListener('click', e => { if (e.target === e.currentTarget) closePaywall(); });
-
+document.getElementById('paywall').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closePaywall();
+});
 function goCheckout(plan) { window.location.href = STRIPE[plan]; }
 
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 //  STATS
-// ════════════════════════════════════════════════════════
-let current   = null;
-let bidCount  = parseInt(localStorage.getItem('tbc_count') || '0');
-let totalVal  = parseFloat(localStorage.getItem('tbc_total') || '0');
-let propNum   = parseInt(localStorage.getItem('tbc_propnum') || '1');
+// ════════════════════════════════════════
+let current  = null;
+let bidCount = parseInt(localStorage.getItem('tbc_count')  || '0');
+let totalVal = parseFloat(localStorage.getItem('tbc_total') || '0');
+let propNum  = parseInt(localStorage.getItem('tbc_pnum')   || '1');
 
-document.getElementById('statBids').textContent = bidCount;
-document.getElementById('statVal').textContent  = '$' + Math.round(totalVal).toLocaleString();
+document.getElementById('sBids').textContent = bidCount;
+document.getElementById('sVal').textContent  = '$' + Math.round(totalVal).toLocaleString();
 
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 //  GENERATE BID
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 async function generateBid() {
+  // Gate: check free limit first
+  if (!canBid()) { openPaywall(); return; }
 
-  // ── GATE: check free limit FIRST ──
-  if (!canBid()) {
-    openPaywall();
-    return;
-  }
+  const clientName = document.getElementById('cName').value.trim();
+  const clientPhone= document.getElementById('cPhone').value.trim();
+  const jobAddr    = document.getElementById('cAddr').value.trim();
+  const trade      = document.getElementById('cTrade').value;
+  const desc       = document.getElementById('cDesc').value.trim();
+  const markup     = document.getElementById('cMarkup').value || 25;
+  const labor      = document.getElementById('cLabor').value || 85;
+  const biz        = document.getElementById('cBiz').value.trim();
 
-  const clientName = document.getElementById('clientName').value.trim();
-  const clientPhone= document.getElementById('clientPhone').value.trim();
-  const jobAddress = document.getElementById('jobAddress').value.trim();
-  const tradeType  = document.getElementById('tradeType').value;
-  const jobDesc    = document.getElementById('jobDesc').value.trim();
-  const markup     = document.getElementById('markup').value || 25;
-  const laborRate  = document.getElementById('laborRate').value || 85;
-  const bizName    = document.getElementById('bizName').value.trim();
-
-  // Validate required fields
   const err = document.getElementById('errMsg');
-  if (!clientName || !jobAddress || !tradeType || !jobDesc) {
+  if (!clientName || !jobAddr || !trade || !desc) {
     err.textContent = '⚠️ Please fill in Client Name, Job Address, Trade Type, and Job Description.';
-    err.classList.add('visible');
-    return;
+    err.classList.add('on'); return;
   }
-  err.classList.remove('visible');
+  err.classList.remove('on');
 
   const btn = document.getElementById('genBtn');
   btn.classList.add('loading'); btn.disabled = true;
@@ -519,14 +1054,14 @@ async function generateBid() {
   const prompt = `You are a professional contractor estimating assistant. Generate a detailed itemized bid.
 
 Job:
-- Trade: ${tradeType}
+- Trade: ${trade}
 - Client: ${clientName}
-- Address: ${jobAddress}
-- Description: ${jobDesc}
+- Address: ${jobAddr}
+- Description: ${desc}
 - Materials Markup: ${markup}%
-- Labor Rate: $${laborRate}/hour
+- Labor Rate: $${labor}/hour
 
-Return ONLY raw valid JSON — no markdown, no backticks, no explanation:
+Return ONLY raw valid JSON — no markdown, no backticks, no explanation. Just the JSON object:
 {
   "lineItems": [{"description":"string","quantity":"string","unitCost":0,"total":0}],
   "grandTotal": 0,
@@ -535,7 +1070,7 @@ Return ONLY raw valid JSON — no markdown, no backticks, no explanation:
   "notes": "string"
 }
 
-Generate 5-9 realistic line items for this ${tradeType} job using current 2024 market pricing. Include labor, materials with markup applied, permits if relevant.`;
+Generate 5-9 realistic line items using current 2024 US market pricing. Include labor, materials with markup applied, and any permits or fees relevant to this job.`;
 
   try {
     const res  = await fetch('/api/generate-bid', {
@@ -547,33 +1082,28 @@ Generate 5-9 realistic line items for this ${tradeType} job using current 2024 m
     if (!res.ok) throw new Error(data.error || 'Server error');
 
     const proposal = JSON.parse(data.result);
-    current = { ...proposal, clientName, clientPhone, jobAddress, tradeType, bizName };
+    current = { ...proposal, clientName, clientPhone, jobAddr, trade, biz };
 
-    // ── Count bid against free limit ──
+    // Count against free limit
     if (getPlan() === 'free') {
-      addUsed();
-      refreshUI();
-      // Show paywall after rendering if this was their last free bid
-      if (usedBids() >= FREE_LIMIT) {
-        setTimeout(openPaywall, 2800);
-      }
+      addUsed(); refreshUI();
+      if (usedBids() >= FREE_LIMIT) setTimeout(openPaywall, 3000);
     }
 
-    renderProposal(proposal, clientName, clientPhone, jobAddress);
+    renderProposal(proposal, clientName, clientPhone, jobAddr);
 
-    // Update stats
     bidCount++; totalVal += proposal.grandTotal; propNum++;
-    localStorage.setItem('tbc_count',   bidCount);
-    localStorage.setItem('tbc_total',   totalVal);
-    localStorage.setItem('tbc_propnum', propNum);
-    document.getElementById('statBids').textContent = bidCount;
-    document.getElementById('statVal').textContent  = '$' + Math.round(totalVal).toLocaleString();
+    localStorage.setItem('tbc_count', bidCount);
+    localStorage.setItem('tbc_total', totalVal);
+    localStorage.setItem('tbc_pnum',  propNum);
+    document.getElementById('sBids').textContent = bidCount;
+    document.getElementById('sVal').textContent  = '$' + Math.round(totalVal).toLocaleString();
 
-    toast('✅ Proposal generated!');
+    showToast('✅ Proposal generated successfully!');
 
   } catch(e) {
-    err.textContent = '⚠️ Generation failed: ' + e.message + '. Please try again.';
-    err.classList.add('visible');
+    err.textContent = '⚠️ ' + e.message + ' — Please check your internet connection and try again.';
+    err.classList.add('on');
   }
 
   btn.classList.remove('loading'); btn.disabled = false;
@@ -581,62 +1111,62 @@ Generate 5-9 realistic line items for this ${tradeType} job using current 2024 m
 }
 
 
-// ════════════════════════════════════════════════════════
-//  RENDER OUTPUT
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
+//  RENDER PROPOSAL
+// ════════════════════════════════════════
 function renderProposal(p, name, phone, addr) {
   const n = String(propNum).padStart(3, '0');
-  document.getElementById('propNum').textContent  = `PROPOSAL #2024-${n}`;
-  document.getElementById('propDate').textContent = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('oClient').textContent  = name  || '—';
-  document.getElementById('oPhone').textContent   = phone || '—';
-  document.getElementById('oAddr').textContent    = addr  || '—';
+  document.getElementById('pNum').textContent  = 'PROPOSAL #2024-' + n;
+  document.getElementById('pDate').textContent = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('oName').textContent  = name  || '—';
+  document.getElementById('oPhone').textContent = phone || '—';
+  document.getElementById('oAddr').textContent  = addr  || '—';
 
-  const box = document.getElementById('lineItems');
+  const box = document.getElementById('itemsBox');
   box.innerHTML = '';
   p.lineItems.forEach(item => {
     const d = document.createElement('div');
-    d.className = 'line-item';
-    d.innerHTML = `<span class="line-item-desc">${item.description}</span><span class="line-item-qty">${item.quantity||'—'}</span><span class="line-item-amount">$${Number(item.total).toLocaleString()}</span>`;
+    d.className = 'li-row';
+    d.innerHTML = `<span class="li-desc">${item.description}</span><span class="li-qty">${item.quantity||'—'}</span><span class="li-amt">$${Number(item.total).toLocaleString()}</span>`;
     box.appendChild(d);
   });
 
   document.getElementById('oTotal').textContent = '$' + Number(p.grandTotal).toLocaleString();
   document.getElementById('oNotes').textContent = `${p.paymentTerms}. Estimated: ${p.estimatedDays}. ${p.notes}`;
-  document.getElementById('placeholder').style.display = 'none';
-  document.getElementById('result').classList.add('visible');
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('outputBox').classList.add('on');
 }
 
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 //  PDF DOWNLOAD
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 function dlPDF() {
   if (!current) return;
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  const or = [255,92,26], dk = [30,30,28], gy = [120,120,115];
+  const or=[255,92,26], dk=[30,30,28], gy=[120,120,115];
 
   doc.setFillColor(...or); doc.rect(0,0,210,42,'F');
   doc.setTextColor(255,255,255);
   doc.setFontSize(22); doc.setFont('helvetica','bold');
-  doc.text(current.bizName || 'TheBidCraft', 14, 18);
+  doc.text(current.biz || 'TheBidCraft', 14, 18);
   doc.setFontSize(10); doc.setFont('helvetica','normal');
   doc.text('Professional Contractor Proposal', 14, 26);
   doc.setFontSize(11); doc.setFont('helvetica','bold');
-  doc.text(document.getElementById('propNum').textContent, 196, 18, {align:'right'});
+  doc.text(document.getElementById('pNum').textContent, 196, 18, {align:'right'});
   doc.setFontSize(9); doc.setFont('helvetica','normal');
   doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}), 196, 26, {align:'right'});
 
   let y = 54;
   doc.setTextColor(...gy); doc.setFontSize(9); doc.setFont('helvetica','bold');
-  doc.text('PREPARED FOR', 14, y); doc.text('JOB ADDRESS', 110, y);
+  doc.text('PREPARED FOR',14,y); doc.text('JOB ADDRESS',110,y);
   y += 6;
   doc.setTextColor(...dk); doc.setFontSize(11); doc.setFont('helvetica','bold');
   doc.text(current.clientName, 14, y);
   doc.setFontSize(10); doc.setFont('helvetica','normal');
-  doc.text(current.clientPhone || '', 14, y+5);
-  doc.text(doc.splitTextToSize(current.jobAddress, 85), 110, y);
+  doc.text(current.clientPhone||'', 14, y+5);
+  doc.text(doc.splitTextToSize(current.jobAddr, 85), 110, y);
 
   y += 22;
   doc.setDrawColor(220,220,215); doc.setLineWidth(0.5); doc.line(14,y,196,y);
@@ -671,30 +1201,31 @@ function dlPDF() {
   doc.setTextColor(...gy); doc.setFontSize(8);
   doc.text('Generated by TheBidCraft · thebidcraft.com',105,285,{align:'center'});
 
-  doc.save(`TheBidCraft-${current.clientName.replace(/\s+/g,'-')}.pdf`);
-  toast('📄 PDF downloaded!');
+  doc.save('TheBidCraft-' + current.clientName.replace(/\s+/g,'-') + '.pdf');
+  showToast('📄 PDF downloaded!');
 }
 
 function copyIt() {
   if (!current) return;
   const lines = current.lineItems.map(i=>`${i.description} — $${Number(i.total).toLocaleString()}`).join('\n');
-  navigator.clipboard.writeText(`PROPOSAL — ${current.clientName}\n${current.jobAddress}\n\n${lines}\n\nTOTAL: $${Number(current.grandTotal).toLocaleString()}\n\n${current.paymentTerms}`)
-    .then(()=>toast('📋 Copied to clipboard!'));
+  navigator.clipboard.writeText(
+    `PROPOSAL — ${current.clientName}\n${current.jobAddr}\n\n${lines}\n\nTOTAL: $${Number(current.grandTotal).toLocaleString()}\n\n${current.paymentTerms}`
+  ).then(()=>showToast('📋 Copied to clipboard!'));
 }
 
-function resetIt() {
-  ['clientName','clientPhone','jobAddress','jobDesc'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('tradeType').value='';
-  document.getElementById('result').classList.remove('visible');
-  document.getElementById('placeholder').style.display='flex';
-  document.getElementById('outStatus').textContent='Fill the form to generate';
-  current=null;
+function newBid() {
+  ['cName','cPhone','cAddr','cDesc'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('cTrade').value = '';
+  document.getElementById('outputBox').classList.remove('on');
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('outStatus').textContent = 'Fill the form to generate';
+  current = null;
 }
 
-function toast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3200);
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'), 3200);
 }
 
 // ── INIT ──
