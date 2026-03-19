@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refund Policy — TheBidCraft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --orange: #FF5C1A;
+      --dark: #111210;
+      --dark-2: #1A1B18;
+      --dark-3: #242520;
+      --mid: #35362F;
+      --steel: #6B7066;
+      --mist: #A8ADA0;
+      --white: #FAFAF8;
+      --green: #4CAF7D;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: var(--dark); color: var(--white); -webkit-font-smoothing: antialiased; }
+
+    nav { position: sticky; top: 0; z-index: 100; padding: 0 5%; height: 68px; display: flex; align-items: center; justify-content: space-between; background: rgba(17,18,16,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon { width: 32px; height: 32px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .nav-logo-text { font-family: var(--font-display); font-size: 20px; letter-spacing: 1px; color: var(--white); }
+    .nav-back { color: var(--steel); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-back:hover { color: var(--white); }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 60px 5% 100px; }
+    .page-tag { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; display: block; }
+    .page-title { font-family: var(--font-display); font-size: clamp(48px, 7vw, 80px); letter-spacing: 2px; line-height: 0.95; margin-bottom: 16px; }
+    .page-date { font-size: 13px; color: var(--steel); margin-bottom: 56px; padding-bottom: 32px; border-bottom: 1px solid var(--mid); }
+
+    .section { margin-bottom: 44px; }
+    h2 { font-family: var(--font-display); font-size: 28px; letter-spacing: 1px; color: var(--white); margin-bottom: 14px; }
+    p { font-size: 15px; line-height: 1.85; color: var(--mist); margin-bottom: 14px; }
+    ul { padding-left: 20px; margin-bottom: 14px; }
+    ul li { font-size: 15px; line-height: 1.85; color: var(--mist); margin-bottom: 6px; }
+    strong { color: var(--white); font-weight: 600; }
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .guarantee-box {
+      background: linear-gradient(135deg, rgba(76,175,125,0.08), rgba(76,175,125,0.03));
+      border: 1px solid rgba(76,175,125,0.25);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 44px;
+      text-align: center;
+    }
+    .guarantee-box .icon { font-size: 44px; margin-bottom: 12px; }
+    .guarantee-box h3 { font-family: var(--font-display); font-size: 32px; letter-spacing: 1px; color: var(--white); margin-bottom: 10px; }
+    .guarantee-box p { color: var(--mist); font-size: 15px; margin-bottom: 0; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    .step-box {
+      background: var(--dark-2);
+      border: 1px solid var(--mid);
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 36px; height: 36px; min-width: 36px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: white;
+    }
+    .step-content h4 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 5px; }
+    .step-content p { font-size: 14px; color: var(--steel); margin-bottom: 0; line-height: 1.6; }
+
+    footer { background: var(--dark-2); border-top: 1px solid var(--mid); padding: 32px 5%; text-align: center; }
+    footer p { font-size: 13px; color: var(--steel); }
+    footer a { color: var(--steel); text-decoration: none; margin: 0 12px; transition: color 0.2s; }
+    footer a:hover { color: var(--white); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">🔨</div>
+    <span class="nav-logo-text">TheBidCraft</span>
+  </a>
+  <a href="/" class="nav-back">← Back to Home</a>
+</nav>
+
+<div class="container">
+
+  <span class="page-tag">Legal</span>
+  <h1 class="page-title">REFUND<br>POLICY</h1>
+  <p class="page-date">Last updated: March 2026</p>
+
+  <div class="guarantee-box">
+    <div class="icon">🛡️</div>
+    <h3>14-DAY MONEY-BACK GUARANTEE</h3>
+    <p>We stand behind TheBidCraft completely. If you are not satisfied within 14 days of your purchase, we will refund you in full — no questions asked, no forms to fill out.</p>
+  </div>
+
+  <div class="section">
+    <h2>Our Commitment</h2>
+    <p>At TheBidCraft we believe you should only pay for something that genuinely helps your business. We offer a straightforward, no-hassle refund policy because we are confident in our product and we respect your trust.</p>
+    <p>We built TheBidCraft for contractors, not to trap them in subscriptions they do not want. If it is not working for you, we make it easy to get your money back.</p>
+  </div>
+
+  <div class="section">
+    <h2>Eligibility for a Refund</h2>
+    <p>You are eligible for a full refund if:</p>
+    <ul>
+      <li>You request the refund within <strong>14 days</strong> of your original purchase date</li>
+      <li>You are a first-time subscriber on that plan (monthly or lifetime)</li>
+      <li>Your account has not violated our Terms of Service</li>
+    </ul>
+    <p>Refund requests submitted after 14 days from the original purchase date are handled on a case-by-case basis at our discretion. We are a small team and will always try to find a fair resolution.</p>
+  </div>
+
+  <div class="section">
+    <h2>How to Request a Refund</h2>
+    <p>The process is simple and takes less than 2 minutes:</p>
+
+    <div class="step-box">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Send us an email</h4>
+        <p>Email <a href="mailto:thebidcraft@gmail.com">thebidcraft@gmail.com</a> with the subject line: <strong>"Refund Request"</strong></p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Include your account email</h4>
+        <p>Tell us the email address you used to sign up for TheBidCraft. That is all we need to find your account.</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>We process it within 24 hours</h4>
+        <p>We will confirm your refund by email and process it immediately. Funds typically appear in your account within 5–10 business days depending on your bank or card issuer.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:20px;">You do not need to provide a reason for the refund. You do not need to fill out any forms. One email is all it takes.</p>
+  </div>
+
+  <div class="section">
+    <h2>Monthly Subscriptions</h2>
+    <p>For monthly subscribers:</p>
+    <ul>
+      <li>If you cancel within 14 days of your <strong>first</strong> charge, you receive a full refund and your account is closed.</li>
+      <li>If you cancel after 14 days, your subscription ends at the close of the current billing period. You will not be charged again but we do not provide prorated refunds for unused days in the current period.</li>
+      <li>To cancel your subscription without a refund, go to <a href="https://billing.stripe.com" target="_blank">billing.stripe.com</a>, log in with the email you used to subscribe, and cancel from there. No email needed.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Lifetime Plans</h2>
+    <p>For lifetime plan purchasers:</p>
+    <ul>
+      <li>If you request a refund within 14 days of your purchase, you receive a full refund and your lifetime access is revoked.</li>
+      <li>After 14 days, lifetime purchases are considered final. We do not offer refunds on lifetime plans after the guarantee period as the full value has been delivered.</li>
+      <li>If you experience a technical issue that prevents you from using the service, contact us and we will do everything in our power to resolve it before processing any refund.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Free Trial Period</h2>
+    <p>TheBidCraft offers 5 free proposals with no credit card required. This free trial is designed so you can experience the product before committing to any payment. We encourage you to fully test the service during this free period before subscribing.</p>
+    <p>Because a free trial is available, refund requests citing "I did not get to try it first" will be considered but are not guaranteed after the 14-day refund window has closed.</p>
+  </div>
+
+  <div class="section">
+    <h2>Chargebacks</h2>
+    <p>We ask that you contact us directly before initiating a chargeback with your bank or card issuer. Chargebacks create significant administrative burden for small businesses and can result in account termination. In virtually all cases, emailing us directly results in a faster, smoother resolution for everyone.</p>
+    <p>If you have already initiated a chargeback and still want to resolve things directly, email us at <a href="mailto:thebidcraft@gmail.com">thebidcraft@gmail.com</a> and we will work with you.</p>
+  </div>
+
+  <div class="section">
+    <h2>Contact Us</h2>
+    <p>For refund requests or any billing questions, reach us at:</p>
+    <p><strong>Email:</strong> <a href="mailto:thebidcraft@gmail.com">thebidcraft@gmail.com</a><br/>
+    We respond to all refund requests within 24 hours, Monday through Friday.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>
+    <a href="/">Home</a>
+    <a href="/privacy.html">Privacy Policy</a>
+    <a href="/terms.html">Terms of Service</a>
+    <a href="/refund.html">Refund Policy</a>
+    <a href="mailto:thebidcraft@gmail.com">thebidcraft@gmail.com</a>
+  </p>
+  <p style="margin-top:12px;">© 2026 TheBidCraft. All rights reserved.</p>
+</footer>
+
+<!-- Crisp chat -->
+<script type="text/javascript">
+  window.$crisp=[];
+  window.CRISP_WEBSITE_ID="2c27f43d-d521-43c2-b3b0-a3c1a79f4f11";
+  (function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();
+</script>
+
+</body>
+</html>
