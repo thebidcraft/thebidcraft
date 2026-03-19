@@ -167,15 +167,8 @@
     .toast.on { transform: translateY(0); opacity: 1; }
 
     @media (max-width: 768px) { .sidebar { display: none; } .gen-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } .m-plans { grid-template-columns: 1fr; } }
-  </style><!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8MJHTLRRNB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-8MJHTLRRNB');
-</script></head>
+  </style>
+</head>
 <body>
 
 <!-- PAYWALL -->
@@ -198,7 +191,7 @@
             <li><span class="ck">✓</span> Your branding</li>
             <li><span class="ck">✓</span> All trade types</li>
           </ul>
-          <button class="m-btn g">Start Monthly →</button>
+          <button class="m-btn g">Start Free — 14 Days Free Trial →</button>
         </div>
         <div class="m-plan hot" onclick="goCheckout('lifetime')">
           <div class="m-plan-badge">⭐ Best Value</div>
@@ -437,8 +430,8 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
 // Stripe links
 const STRIPE = {
-  monthly:  'https://buy.stripe.com/5kQ7sM9NfdYebFC2sv2go00',
-  lifetime: 'https://buy.stripe.com/14A28s9Nf07oaBy4AD2go01'
+  monthly:  'https://buy.stripe.com/6oUcN6e3v07o6liaZ12go02',
+  lifetime: 'https://buy.stripe.com/3cI28s1gJ8DU7pmgjl2go03'
 };
 
 const FREE_LIMIT = 5;
