@@ -455,12 +455,21 @@ async function init() {
   currentUser = session.user;
 
   // Load profile from Supabase
-  const { data: profile } = await sb.from('profiles')
+  let { data: profile } = await sb.from('profiles')
     .select('*')
     .eq('id', currentUser.id)
     .single();
 
-  userProfile = profile;
+  // If profile doesn't exist yet, create it now
+  if (!profile) {
+    const { data: newProfile } = await sb.from('profiles')
+      .insert({ id: currentUser.id, email: currentUser.email, plan: 'free', bids_used: 0 })
+      .select()
+      .single();
+    profile = newProfile;
+  }
+
+  userProfile = profile || { id: currentUser.id, email: currentUser.email, plan: 'free', bids_used: 0 };
 
   // Detect Stripe return (plan upgrade)
   await detectPayment();
@@ -486,7 +495,7 @@ async function detectPayment() {
       .update({ plan: plan })
       .eq('id', currentUser.id);
 
-    userProfile.plan = plan;
+    if (userProfile) userProfile.plan = plan;
     window.history.replaceState({}, '', '/app.html');
     showToast('🎉 Subscription activated! Unlimited bids unlocked.');
   }
@@ -630,7 +639,7 @@ Generate 5-9 realistic line items using current US market pricing. Include labor
       await sb.from('profiles')
         .update({ bids_used: newUsed })
         .eq('id', currentUser.id);
-      userProfile.bids_used = newUsed;
+      if (userProfile) userProfile.bids_used = newUsed;
       updatePlanUI();
       if (newUsed >= FREE_LIMIT) setTimeout(openPaywall, 3000);
     }
